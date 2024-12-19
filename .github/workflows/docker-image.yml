@@ -22,7 +22,7 @@ jobs:
         run: npm ci
 
       - name: Build Docker image
-        run: docker build -t your-dockerhub-username/your-repo-name:latest .
+        run: docker build -t fishypop/node-benchmark:latest .
         # Replace with your Docker Hub username and repo name.  The "latest" tag is conventional for the most recent build.
 
       - name: Log in to Docker Hub

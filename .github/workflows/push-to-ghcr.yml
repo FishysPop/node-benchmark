@@ -1,0 +1,35 @@
+name: Build and push to GHCR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read  # Required for actions/checkout@v3
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # ... Your build steps (if needed, e.g., npm ci, build your app) ...
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/fishyspop/node-benchmark:latest .
+        # OR for a specific tag:
+        # run: docker build -t ghcr.io/${{ github.repository }}:v1.0 .
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Docker image
+        run: docker push ghcr.io/fishyspop/node-benchmark:latest
+        # OR for a specific tag:
+        # run: docker push ghcr.io/${{ github.repository }}:v1.0
