@@ -30,6 +30,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Docker image
-        run: docker push ghcr.io/${{ github.repository }}:latest
+        run: docker push ghcr.io/fishyspop/node-benchmark:latest
         # OR for a specific tag:
         # run: docker push ghcr.io/${{ github.repository }}:v1.0
