@@ -18,7 +18,7 @@ jobs:
       # ... Your build steps (if needed, e.g., npm ci, build your app) ...
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/fishyspop/node-benchmark:latest . .
+        run: docker build -t ghcr.io/fishyspop/node-benchmark:latest .
         # OR for a specific tag:
         # run: docker build -t ghcr.io/${{ github.repository }}:v1.0 .
 
