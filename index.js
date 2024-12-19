@@ -122,7 +122,7 @@ function runNetworkTests() {
   }).finally(() => {
     // Ping test
     const gateway = '8.8.8.8'; // Use a known IP address for ping test
-    const pingCommand = `ping -n 3 ${gateway}`;  // -n 3 sends 3 ping packets (Windows)
+    const pingCommand = os.platform() === 'win32' ? `ping -n 3 ${gateway}` : `ping -c 3 ${gateway}`;  // -n 3 for Windows, -c 3 for Linux
 
     exec(pingCommand, (error, stdout, stderr) => {
       if (error) {
