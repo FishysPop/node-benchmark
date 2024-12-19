@@ -1,0 +1,44 @@
+name: Docker Image Build
+
+on:
+  push:
+    branches:
+      - main  # Adjust to your main branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '17' # Or your desired Node.js version
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Docker image
+        run: docker build -t your-dockerhub-username/your-repo-name:latest .
+        # Replace with your Docker Hub username and repo name.  The "latest" tag is conventional for the most recent build.
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+        # Uses secrets to store credentials securely. Create DOCKERHUB_USERNAME and DOCKERHUB_PASSWORD secrets in your repo settings.
+        
+      - name: Push Docker image
+        run: docker push fishypop/node-benchmark:latest
+        # Pushes to Docker Hub after successful login.
+
+      # Optional: Add steps for Cloud Run deployment if needed. Example below:
+      # - name: Set up Google Cloud
+      #   uses: google-github-actions/setup-gcloud@master
+      #   with:
+      #     service_account_key: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY }}
+      #     project_id: your-gcp-project-id
+      # - name: Deploy to Cloud Run
+      #   run: gcloud run deploy your-cloud-run-service-name --image your-dockerhub-username/your-repo-name:latest --region your-gcp-region --platform managed
+
