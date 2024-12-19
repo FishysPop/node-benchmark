@@ -104,36 +104,34 @@ suite
   .on('complete', function() {
     console.log('Fastest is ' + this.filter('fastest').map('name'));
   })
-  .run({ 'async': true }); 
+  .run({ 'async': true }); // Important for async tests
 
 // Function to run network tests once
 function runNetworkTests() {
   // Speed test
   const speedtest = new FastSpeedtest({
-    token: 'YXNkZmFzZGxmbnNkYWZoYXNkZmhrYWxm',
+    token: 'YXNkZmFzZGxmbnNkYWZoYXNkZmhrYWxm', // Replace with your Fast.com API token
     verbose: false,
-    urlCount: 5, 
-    bufferSize: 8, 
-    unit: FastSpeedtest.UNITS.Mbps, 
   });
 
   speedtest.getSpeed().then(speed => {
-    console.log(`Download speed: ${speed.toFixed(2)} Mbps`);
+    const speedMbps = speed / 1000000; // Convert bps to Mbps
+    console.log(`Download speed: ${speedMbps.toFixed(2)} Mbps`);
   }).catch(err => {
     console.error('Speed test error:', err);
-  });
+  }).finally(() => {
+    // Ping test
+    const gateway = '8.8.8.8'; // Use a known IP address for ping test
+    const pingCommand = `ping -n 3 ${gateway}`;  // -n 3 sends 3 ping packets (Windows)
 
-  // Ping test
-  const gateway = '8.8.8.8'; 
-  const platform = os.platform();
-  const countOption = (platform === 'win32') ? '-n' : '-c';  // Windows: -n, Linux/macOS: -c
-  const pingCommand = `ping ${countOption} 3 ${gateway}`; // Consistent command structure
-
-  exec(pingCommand, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Ping error: ${error}`);
-    } else {
-      console.log(`Ping output:\n${stdout}`);
-    }
+    exec(pingCommand, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Ping error: ${error}`);
+      } else {
+        console.log(`Ping output:\n${stdout}`);
+      }
+      // Exit the process after all tests are complete
+      process.exit(0);
+    });
   });
 }
